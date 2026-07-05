@@ -1,0 +1,11 @@
+{
+  "name": "IT Passport AI Coach",
+  "short_name": "IT Passport",
+  "description": "ITパスポート試験受験者向け学習記録アプリ",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#111d34",
+  "theme_color": "#1b2a4a",
+  "lang": "ja",
+  "icons": []
+}
