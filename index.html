@@ -202,6 +202,78 @@
     color:var(--ink);
   }
   textarea{resize:vertical; min-height:64px; font-family:'Noto Sans JP', sans-serif;}
+  .csv-box{
+    margin-bottom:10px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:9px;
+    padding:12px 14px;
+  }
+  .csv-label{
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--navy);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .csv-help-toggle{
+    font-size:11px;
+    font-weight:400;
+    color:var(--stamp);
+    cursor:pointer;
+    text-decoration:underline;
+  }
+  .csv-help{
+    font-size:11.5px;
+    color:#777;
+    line-height:1.7;
+    margin-top:8px;
+    background:var(--paper-dim);
+    border-radius:7px;
+    padding:9px 10px;
+  }
+  .csv-example{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--navy);
+    line-height:1.6;
+  }
+  .csv-textarea{
+    width:100%;
+    margin-top:9px;
+    min-height:70px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:8px 10px;
+    background:var(--paper);
+    resize:vertical;
+  }
+  .csv-btn{
+    width:100%;
+    margin-top:8px;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    border-radius:7px;
+    padding:10px;
+    font-size:13px;
+    font-weight:700;
+    font-family:'Noto Sans JP', sans-serif;
+    cursor:pointer;
+  }
+  .csv-status{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--teal);
+    margin-top:6px;
+    min-height:14px;
+  }
+  .csv-status.err{color:var(--stamp);}
+
   .ocr-box{margin-bottom:14px;}
   .ocr-btn{
     width:100%;
@@ -502,10 +574,24 @@
 
       <label class="f-label" style="margin-top:18px;">得点入力（正解数 / 問題数）</label>
 
+      <div class="csv-box">
+        <div class="csv-label">
+          CSV貼り付けで自動入力
+          <span class="csv-help-toggle" onclick="toggleCsvHelp()">使い方</span>
+        </div>
+        <div class="csv-help" id="csvHelp" style="display:none;">
+          画像の自動読み取り（下のOCR）が上手くいかない時は、そのスクリーンショットをClaudeとのチャットに送って、次の形式に変換してもらってください。それを下の欄に貼り付けて「反映する」を押すと、得点欄に自動入力されます。<br><br>
+          <span class="csv-example">overall,55,100<br>strategy,19,34<br>management,10,20<br>technology,26,46</span>
+        </div>
+        <textarea id="csvPasteInput" class="csv-textarea" placeholder="overall,55,100&#10;strategy,19,34&#10;management,10,20&#10;technology,26,46"></textarea>
+        <button type="button" class="csv-btn" onclick="applyCsvPaste()">反映する</button>
+        <div class="csv-status" id="csvStatus"></div>
+      </div>
+
       <div class="ocr-box">
         <input type="file" id="ocrFile" accept="image/*" style="display:none" onchange="handleOcrFile(event)">
         <button type="button" class="ocr-btn" onclick="document.getElementById('ocrFile').click()">
-          <span class="ocr-icon">📷</span> スクリーンショットから自動入力
+          <span class="ocr-icon">📷</span> スクリーンショットから自動入力（画像認識・試験的）
         </button>
         <div class="ocr-status" id="ocrStatus"></div>
         <div class="ocr-raw-box" id="ocrRawBox" style="display:none;">
@@ -775,6 +861,8 @@ function prepRecordForm(){
   document.getElementById('formMsg').textContent = '';
   document.getElementById('ocrStatus').textContent = '';
   document.getElementById('ocrStatus').className = 'ocr-status';
+  document.getElementById('csvStatus').textContent = '';
+  document.getElementById('csvStatus').className = 'csv-status';
   hideOcrRawText();
 }
 
@@ -787,6 +875,61 @@ document.addEventListener('input', (e)=>{
     row.querySelector('.live-pct').textContent = p===null ? '—' : p+'%';
   }
 });
+
+/* ---------------- CSV paste import ----------------
+   The most reliable way to fill in scores: paste a small, simple CSV
+   (one line per category: name,correct,total). This is the format
+   Claude (or any assistant) can produce after reading a screenshot
+   directly, which is far more reliable than in-browser OCR — especially
+   for graphic-heavy layouts (circular gauges, etc.) that OCR struggles with.
+*/
+function toggleCsvHelp(){
+  const el = document.getElementById('csvHelp');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+const CSV_CATEGORY_ALIASES = {
+  overall: 'overall', '総合': 'overall', '総合得点': 'overall',
+  strategy: 'strategy', 'ストラテジ': 'strategy', 'ストラテジ系': 'strategy',
+  management: 'management', 'マネジメント': 'management', 'マネジメント系': 'management',
+  technology: 'technology', 'テクノロジ': 'technology', 'テクノロジ系': 'technology',
+};
+
+function parseCsvPaste(rawText){
+  const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  const found = {};
+  for(const line of lines){
+    const parts = line.split(',').map(p => p.trim());
+    if(parts.length < 3) continue;
+    const key = CSV_CATEGORY_ALIASES[parts[0]] || CSV_CATEGORY_ALIASES[parts[0].toLowerCase()];
+    if(!key) continue;
+    const correct = parseInt(parts[1], 10);
+    const total = parseInt(parts[2], 10);
+    if(!isNaN(correct) && !isNaN(total) && total > 0 && correct <= total){
+      found[key] = { correct, total };
+    }
+  }
+  return found;
+}
+
+function applyCsvPaste(){
+  const raw = document.getElementById('csvPasteInput').value;
+  const statusEl = document.getElementById('csvStatus');
+  if(!raw.trim()){
+    statusEl.textContent = '貼り付け欄が空です。';
+    statusEl.className = 'csv-status err';
+    return;
+  }
+  const parsed = parseCsvPaste(raw);
+  const count = applyOcrResults(parsed);
+  if(count === 0){
+    statusEl.textContent = '形式を認識できませんでした。「使い方」の例を確認してください。';
+    statusEl.className = 'csv-status err';
+  }else{
+    statusEl.textContent = `${count}項目を反映しました。数字を確認してから保存してください。`;
+    statusEl.className = 'csv-status';
+  }
+}
 
 /* ---------------- OCR: fill scores from a screenshot ----------------
    Uses Tesseract.js (client-side, no server/API key involved) to read
@@ -997,6 +1140,8 @@ async function saveRecord(){
   document.querySelectorAll('.score-row input').forEach(i=>i.value='');
   document.querySelectorAll('.live-pct').forEach(el=>el.textContent='—');
   hideOcrRawText();
+  document.getElementById('csvPasteInput').value = '';
+  document.getElementById('csvStatus').textContent = '';
 
   showToast('保存しました');
 }
