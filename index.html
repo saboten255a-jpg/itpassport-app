@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>IT Passport AI Coach</title>
 <link rel="manifest" href="./manifest.json">
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700;900&family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -201,6 +202,33 @@
     color:var(--ink);
   }
   textarea{resize:vertical; min-height:64px; font-family:'Noto Sans JP', sans-serif;}
+  .ocr-box{margin-bottom:14px;}
+  .ocr-btn{
+    width:100%;
+    background:#fff;
+    border:1.5px dashed var(--navy);
+    color:var(--navy);
+    border-radius:9px;
+    padding:13px;
+    font-size:13.5px;
+    font-weight:700;
+    font-family:'Noto Sans JP', sans-serif;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+  }
+  .ocr-icon{font-size:15px;}
+  .ocr-status{
+    text-align:center;
+    font-size:12px;
+    color:var(--teal);
+    margin-top:6px;
+    min-height:14px;
+  }
+  .ocr-status.err{color:var(--stamp);}
+
   .score-row{
     display:flex;
     align-items:center;
@@ -450,6 +478,15 @@
       <input type="text" id="in-practice" placeholder="例）過去問道場 令和6年 第1回">
 
       <label class="f-label" style="margin-top:18px;">得点入力（正解数 / 問題数）</label>
+
+      <div class="ocr-box">
+        <input type="file" id="ocrFile" accept="image/*" style="display:none" onchange="handleOcrFile(event)">
+        <button type="button" class="ocr-btn" onclick="document.getElementById('ocrFile').click()">
+          <span class="ocr-icon">📷</span> スクリーンショットから自動入力
+        </button>
+        <div class="ocr-status" id="ocrStatus"></div>
+      </div>
+
       <div class="score-row" data-cat="overall">
         <div class="cat-name">総合</div>
         <input type="number" min="0" class="in-correct" placeholder="55">
@@ -676,6 +713,21 @@ function averagePct(catKey){
   return Math.round((vals.reduce((a,b)=>a+b,0)/vals.length)*10)/10;
 }
 
+/* ---------------- Japanese era (和暦) helpers ----------------
+   Only Reiwa (令和, starting 2019 = Reiwa 1) is supported, which
+   covers the practical range for current exam takers.
+*/
+function seirekiToReiwa(y){ return y - 2018; }
+function reiwaToSeireki(r){ return r + 2018; }
+// Handles records saved before the era switch (which stored the western year).
+function formatYearLabel(y){
+  if(!y && y !== 0) return '';
+  const n = parseInt(y, 10);
+  if(isNaN(n)) return '';
+  const reiwa = n > 100 ? seirekiToReiwa(n) : n;
+  return '令和' + reiwa + '年度';
+}
+
 /* ---------------- Record form ---------------- */
 function prepRecordForm(){
   const dateInput = document.getElementById('in-date');
@@ -686,13 +738,16 @@ function prepRecordForm(){
   const yearSelect = document.getElementById('in-year');
   if(yearSelect.options.length === 0){
     const thisYear = new Date().getFullYear();
-    for(let y = thisYear; y >= thisYear - 6; y--){
+    const thisReiwa = seirekiToReiwa(thisYear);
+    for(let r = thisReiwa; r >= thisReiwa - 6; r--){
       const opt = document.createElement('option');
-      opt.value = y; opt.textContent = y + '年度';
+      opt.value = r; opt.textContent = '令和' + r + '年度';
       yearSelect.appendChild(opt);
     }
   }
   document.getElementById('formMsg').textContent = '';
+  document.getElementById('ocrStatus').textContent = '';
+  document.getElementById('ocrStatus').className = 'ocr-status';
 }
 
 document.addEventListener('input', (e)=>{
@@ -704,6 +759,117 @@ document.addEventListener('input', (e)=>{
     row.querySelector('.live-pct').textContent = p===null ? '—' : p+'%';
   }
 });
+
+/* ---------------- OCR: fill scores from a screenshot ----------------
+   Uses Tesseract.js (client-side, no server/API key involved) to read
+   text from an uploaded exam-result screenshot, then looks for
+   "correct/total" style numbers near each category's name.
+   This is a best-effort reader — the user should always double-check
+   the filled-in numbers before saving.
+*/
+const OCR_KEYWORDS = {
+  overall: ['総合', '総合得点', '得点'],
+  strategy: ['ストラテジ', 'ストラテジ系'],
+  management: ['マネジメント', 'マネジメント系'],
+  technology: ['テクノロジ', 'テクノロジ系'],
+};
+
+function setOcrStatus(text, isErr){
+  const el = document.getElementById('ocrStatus');
+  el.textContent = text;
+  el.className = 'ocr-status' + (isErr ? ' err' : '');
+}
+
+async function handleOcrFile(event){
+  const file = event.target.files[0];
+  event.target.value = '';
+  if(!file) return;
+
+  if(typeof Tesseract === 'undefined'){
+    setOcrStatus('画像読み取り機能を読み込めませんでした。通信環境を確認してください。', true);
+    return;
+  }
+
+  setOcrStatus('画像を読み取っています…（数十秒かかることがあります）');
+  try{
+    const result = await Tesseract.recognize(file, 'jpn+eng');
+    const text = result && result.data && result.data.text ? result.data.text : '';
+    const parsed = parseScoreText(text);
+    const filledCount = applyOcrResults(parsed);
+
+    if(filledCount === 0){
+      setOcrStatus('数値を読み取れませんでした。手入力をお願いします。', true);
+    }else{
+      setOcrStatus(`${filledCount}項目を自動入力しました。内容を確認してから保存してください。`);
+    }
+  }catch(e){
+    setOcrStatus('読み取り中にエラーが発生しました。もう一度お試しください。', true);
+  }
+}
+
+// Extracts "correct/total" style numbers near each category keyword.
+// Falls back to the first four number-pairs, in category order, when
+// keywords can't be matched (many past-exam sites format the layout
+// slightly differently).
+function parseScoreText(rawText){
+  const text = rawText.replace(/[ｏＯ]/g, '0').replace(/[，、]/g, ',');
+  const pairPattern = /(\d{1,3})\s*[\/／]\s*(\d{1,3})/g;
+
+  const found = {};
+  for(const key of Object.keys(OCR_KEYWORDS)){
+    const keywords = OCR_KEYWORDS[key];
+    for(const kw of keywords){
+      const idx = text.indexOf(kw);
+      if(idx === -1) continue;
+      // Search a window of text right after the keyword for a pair.
+      const window = text.slice(idx, idx + 60);
+      pairPattern.lastIndex = 0;
+      const m = pairPattern.exec(window);
+      if(m){
+        const correct = parseInt(m[1], 10);
+        const total = parseInt(m[2], 10);
+        if(total > 0 && correct <= total){
+          found[key] = { correct, total };
+          break;
+        }
+      }
+    }
+  }
+
+  // Fallback: if we found fewer than 2 categories via keywords,
+  // grab all pairs in the document and assign them in order.
+  if(Object.keys(found).length < 2){
+    const allPairs = [];
+    let m;
+    pairPattern.lastIndex = 0;
+    while((m = pairPattern.exec(text)) !== null){
+      const correct = parseInt(m[1], 10);
+      const total = parseInt(m[2], 10);
+      if(total > 0 && correct <= total) allPairs.push({correct, total});
+    }
+    const order = ['overall', 'strategy', 'management', 'technology'];
+    order.forEach((key, i)=>{
+      if(!found[key] && allPairs[i]) found[key] = allPairs[i];
+    });
+  }
+
+  return found;
+}
+
+function applyOcrResults(parsed){
+  let count = 0;
+  document.querySelectorAll('.score-row').forEach(row=>{
+    const cat = row.dataset.cat;
+    if(parsed[cat]){
+      row.querySelector('.in-correct').value = parsed[cat].correct;
+      row.querySelector('.in-total').value = parsed[cat].total;
+      const p = pct(parsed[cat].correct, parsed[cat].total);
+      row.querySelector('.live-pct').textContent = p===null ? '—' : p+'%';
+      count++;
+    }
+  });
+  return count;
+}
 
 async function saveRecord(){
   const date = document.getElementById('in-date').value;
@@ -779,7 +945,7 @@ function renderHistory(){
     return `
       <div class="stamp-card">
         <div class="stamp-badge"><span class="sp">${op===null?'—':op+'%'}</span><span class="sl">SCORE</span></div>
-        <div class="stamp-date">${r.date}${r.year ? ' ・ '+r.year+'年度' : ''}</div>
+        <div class="stamp-date">${r.date}${r.year ? ' ・ '+formatYearLabel(r.year) : ''}</div>
         ${r.practice ? `<div class="stamp-meta">${escapeHtml(r.practice)}</div>` : ''}
         <div class="stamp-grid">
           <div class="stamp-item">
