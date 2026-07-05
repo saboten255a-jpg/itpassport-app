@@ -7,23 +7,23 @@
 <link rel="manifest" href="./manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700;900&family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#1b2a4a;
-    --navy-deep:#111d34;
-    --paper:#f7f3e8;
-    --paper-dim:#efe8d6;
-    --ink:#232323;
-    --stamp:#c1443c;
-    --gold:#b8935a;
-    --teal:#3e6b63;
-    --line: rgba(27,42,74,0.18);
+    --navy:#2F8FE0;
+    --navy-deep:#1E5FA8;
+    --paper:#FFFDF5;
+    --paper-dim:#FFF3D6;
+    --ink:#33415C;
+    --stamp:#FF7A59;
+    --gold:#FFC93C;
+    --teal:#3FC79A;
+    --line: rgba(47,143,224,0.18);
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
   html,body{margin:0;padding:0;height:100%;background:var(--navy-deep);}
   body{
-    font-family:'Noto Sans JP', sans-serif;
+    font-family:'M PLUS Rounded 1c', sans-serif;
     color:var(--ink);
     display:flex;
     justify-content:center;
@@ -41,39 +41,86 @@
 
   /* ---------- Header ---------- */
   .topbar{
-    background:var(--navy);
-    color:var(--paper);
-    padding:22px 20px 18px;
+    background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color:#fff;
+    padding:24px 20px 26px;
     position:relative;
     overflow:hidden;
+    border-radius:0 0 28px 28px;
   }
   .topbar::after{
-    content:"";
+    content:"✦";
     position:absolute;
-    right:-40px; top:-40px;
-    width:140px; height:140px;
-    border:2px solid rgba(247,243,232,0.12);
-    border-radius:50%;
+    right:18px; top:14px;
+    font-size:20px;
+    color:rgba(255,255,255,0.35);
+  }
+  .topbar::before{
+    content:"✦";
+    position:absolute;
+    left:60px; bottom:10px;
+    font-size:13px;
+    color:rgba(255,255,255,0.25);
   }
   .topbar .eyebrow{
-    font-family:'JetBrains Mono', monospace;
-    font-size:10px;
-    letter-spacing:3px;
+    font-family:'Fredoka', sans-serif;
+    font-size:11px;
+    letter-spacing:2px;
     color:var(--gold);
     text-transform:uppercase;
+    font-weight:600;
   }
   .topbar h1{
-    font-family:'Zen Old Mincho', serif;
-    font-weight:700;
-    font-size:22px;
+    font-family:'Zen Maru Gothic', sans-serif;
+    font-weight:900;
+    font-size:23px;
     margin:6px 0 2px;
-    letter-spacing:1px;
+    letter-spacing:0.5px;
   }
   .topbar .sub{
-    font-size:11px;
-    color:rgba(247,243,232,0.65);
-    font-family:'JetBrains Mono', monospace;
-    letter-spacing:0.5px;
+    font-size:12px;
+    color:rgba(255,255,255,0.75);
+    font-family:'Fredoka', sans-serif;
+    letter-spacing:0.3px;
+  }
+
+  /* ---------- Mascot ---------- */
+  .mascot-row{
+    display:flex;
+    align-items:flex-end;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .mascot-face{
+    font-size:40px;
+    line-height:1;
+    flex-shrink:0;
+    animation:mascotBob 2.4s ease-in-out infinite;
+  }
+  @keyframes mascotBob{
+    0%,100%{ transform:translateY(0) rotate(-3deg); }
+    50%{ transform:translateY(-5px) rotate(3deg); }
+  }
+  .mascot-bubble{
+    background:#fff;
+    border:2px solid var(--paper-dim);
+    border-radius:16px;
+    padding:10px 14px;
+    font-size:12.5px;
+    font-weight:500;
+    color:var(--ink);
+    position:relative;
+    flex:1;
+    box-shadow:0 3px 0 rgba(47,143,224,0.08);
+  }
+  .mascot-bubble::after{
+    content:"";
+    position:absolute;
+    left:-7px; bottom:12px;
+    width:0; height:0;
+    border-top:7px solid transparent;
+    border-bottom:7px solid transparent;
+    border-right:8px solid #fff;
   }
 
   /* ---------- Content ---------- */
@@ -87,7 +134,7 @@
   @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
 
   h2.section-title{
-    font-family:'Zen Old Mincho', serif;
+    font-family:'Zen Maru Gothic', sans-serif;
     font-size:17px;
     font-weight:700;
     color:var(--navy);
@@ -108,7 +155,7 @@
   .card{
     background:#fff;
     border:1px solid var(--line);
-    border-radius:10px;
+    border-radius:18px;
     padding:16px;
     margin-bottom:14px;
   }
@@ -116,7 +163,7 @@
     font-size:12px;
     color:#6b7280;
     letter-spacing:1px;
-    font-family:'JetBrains Mono', monospace;
+    font-family:'Fredoka', sans-serif;
     text-transform:uppercase;
     margin-bottom:6px;
   }
@@ -129,20 +176,20 @@
     margin:4px 0 10px;
   }
   .hero-score .num{
-    font-family:'JetBrains Mono', monospace;
+    font-family:'Fredoka', sans-serif;
     font-weight:700;
     font-size:46px;
     color:var(--navy);
     line-height:1;
   }
   .hero-score .den{
-    font-family:'JetBrains Mono', monospace;
+    font-family:'Fredoka', sans-serif;
     font-size:16px;
     color:#9a9a9a;
   }
   .hero-score .pct{
     margin-left:auto;
-    font-family:'JetBrains Mono', monospace;
+    font-family:'Fredoka', sans-serif;
     font-size:20px;
     color:var(--stamp);
     font-weight:700;
@@ -152,7 +199,7 @@
   .mini-bar-label{width:78px; font-size:12px; color:#555; flex-shrink:0;}
   .mini-bar-track{flex:1; height:8px; background:var(--paper-dim); border-radius:99px; overflow:hidden;}
   .mini-bar-fill{height:100%; border-radius:99px;}
-  .mini-bar-val{width:52px; text-align:right; font-family:'JetBrains Mono', monospace; font-size:12px; color:#444; flex-shrink:0;}
+  .mini-bar-val{width:52px; text-align:right; font-family:'Fredoka', sans-serif; font-size:12px; color:#444; flex-shrink:0;}
 
   .quick-grid{
     display:grid;
@@ -164,14 +211,14 @@
     background:var(--navy);
     color:var(--paper);
     border:none;
-    border-radius:10px;
+    border-radius:18px;
     padding:16px 12px;
     text-align:left;
-    font-family:'Noto Sans JP', sans-serif;
+    font-family:'M PLUS Rounded 1c', sans-serif;
     cursor:pointer;
   }
   .quick-btn .qb-title{font-weight:700; font-size:14px; display:block; margin-bottom:2px;}
-  .quick-btn .qb-sub{font-size:11px; color:rgba(247,243,232,0.6); font-family:'JetBrains Mono', monospace;}
+  .quick-btn .qb-sub{font-size:11px; color:rgba(247,243,232,0.6); font-family:'Fredoka', sans-serif;}
   .quick-btn.alt{background:#fff; color:var(--navy); border:1px solid var(--line);}
   .quick-btn.alt .qb-sub{color:#8b8b8b;}
 
@@ -195,18 +242,18 @@
     width:100%;
     border:1px solid var(--line);
     background:var(--paper);
-    border-radius:8px;
+    border-radius:14px;
     padding:10px 12px;
     font-size:15px;
-    font-family:'Noto Sans JP', sans-serif;
+    font-family:'M PLUS Rounded 1c', sans-serif;
     color:var(--ink);
   }
-  textarea{resize:vertical; min-height:64px; font-family:'Noto Sans JP', sans-serif;}
+  textarea{resize:vertical; min-height:64px; font-family:'M PLUS Rounded 1c', sans-serif;}
   .csv-box{
     margin-bottom:10px;
     background:#fff;
     border:1px solid var(--line);
-    border-radius:9px;
+    border-radius:16px;
     padding:12px 14px;
   }
   .csv-label{
@@ -230,12 +277,12 @@
     line-height:1.7;
     margin-top:8px;
     background:var(--paper-dim);
-    border-radius:7px;
+    border-radius:13px;
     padding:9px 10px;
   }
   .csv-example{
     display:inline-block;
-    font-family:'JetBrains Mono', monospace;
+    font-family:'Fredoka', sans-serif;
     font-size:11px;
     color:var(--navy);
     line-height:1.6;
@@ -244,10 +291,10 @@
     width:100%;
     margin-top:9px;
     min-height:70px;
-    font-family:'JetBrains Mono', monospace;
+    font-family:'Fredoka', sans-serif;
     font-size:12.5px;
     border:1px solid var(--line);
-    border-radius:7px;
+    border-radius:13px;
     padding:8px 10px;
     background:var(--paper);
     resize:vertical;
@@ -258,11 +305,11 @@
     background:var(--navy);
     color:#fff;
     border:none;
-    border-radius:7px;
+    border-radius:13px;
     padding:10px;
     font-size:13px;
     font-weight:700;
-    font-family:'Noto Sans JP', sans-serif;
+    font-family:'M PLUS Rounded 1c', sans-serif;
     cursor:pointer;
   }
   .csv-status{
@@ -280,11 +327,11 @@
     background:#fff;
     border:1.5px dashed var(--navy);
     color:var(--navy);
-    border-radius:9px;
+    border-radius:16px;
     padding:13px;
     font-size:13.5px;
     font-weight:700;
-    font-family:'Noto Sans JP', sans-serif;
+    font-family:'M PLUS Rounded 1c', sans-serif;
     cursor:pointer;
     display:flex;
     align-items:center;
@@ -304,7 +351,7 @@
     margin-top:8px;
     background:var(--paper-dim);
     border:1px solid var(--line);
-    border-radius:8px;
+    border-radius:14px;
     padding:10px 12px;
   }
   .ocr-raw-label{
@@ -314,7 +361,7 @@
     margin-bottom:4px;
   }
   .ocr-raw-text{
-    font-family:'JetBrains Mono', monospace;
+    font-family:'Fredoka', sans-serif;
     font-size:11.5px;
     color:#555;
     white-space:pre-wrap;
@@ -330,7 +377,7 @@
     gap:8px;
     background:#fff;
     border:1px solid var(--line);
-    border-radius:10px;
+    border-radius:18px;
     padding:12px 14px;
     margin-bottom:10px;
   }
@@ -344,14 +391,14 @@
   .score-row input{
     width:100%;
     text-align:center;
-    font-family:'JetBrains Mono', monospace;
+    font-family:'Fredoka', sans-serif;
     font-weight:600;
   }
-  .score-row .slash{color:#aaa; font-family:'JetBrains Mono', monospace;}
+  .score-row .slash{color:#aaa; font-family:'Fredoka', sans-serif;}
   .score-row .live-pct{
     width:52px;
     text-align:right;
-    font-family:'JetBrains Mono', monospace;
+    font-family:'Fredoka', sans-serif;
     font-size:12px;
     color:var(--stamp);
     font-weight:700;
@@ -362,11 +409,11 @@
     background:var(--stamp);
     color:#fff;
     border:none;
-    border-radius:9px;
+    border-radius:16px;
     padding:14px;
     font-size:15px;
     font-weight:700;
-    font-family:'Noto Sans JP', sans-serif;
+    font-family:'M PLUS Rounded 1c', sans-serif;
     letter-spacing:1px;
     cursor:pointer;
     margin-top:8px;
@@ -384,28 +431,29 @@
   .stamp-card{
     position:relative;
     background:#fff;
-    border:1px dashed var(--line);
-    border-radius:10px;
+    border:2px solid var(--paper-dim);
+    border-radius:20px;
     padding:14px 14px 14px 16px;
-    margin-bottom:14px;
+    margin-bottom:16px;
+    box-shadow:0 4px 0 rgba(47,143,224,0.08);
   }
   .stamp-card .stamp-badge{
     position:absolute;
     top:10px; right:12px;
-    border:2px solid var(--stamp);
-    color:var(--stamp);
+    border:3px solid #fff;
+    color:#fff;
     border-radius:50%;
-    width:52px; height:52px;
+    width:56px; height:56px;
     display:flex; align-items:center; justify-content:center;
     flex-direction:column;
-    transform:rotate(-8deg);
-    font-family:'JetBrains Mono', monospace;
-    opacity:0.9;
+    transform:rotate(-6deg);
+    font-family:'Fredoka', sans-serif;
+    box-shadow:0 3px 6px rgba(0,0,0,0.15);
   }
   .stamp-badge .sp{font-size:15px; font-weight:700; line-height:1;}
-  .stamp-badge .sl{font-size:7px; letter-spacing:1px;}
+  .stamp-badge .sl{font-size:13px; line-height:1; margin-top:1px;}
   .stamp-date{
-    font-family:'JetBrains Mono', monospace;
+    font-family:'Fredoka', sans-serif;
     font-size:12px;
     color:#8b8b8b;
   }
@@ -418,13 +466,13 @@
     padding-right:56px;
   }
   .stamp-item .si-label{font-size:11px; color:#888;}
-  .stamp-item .si-val{font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:600; color:var(--navy);}
-  .stamp-item .si-pct{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--stamp); margin-left:4px;}
+  .stamp-item .si-val{font-family:'Fredoka', sans-serif; font-size:13px; font-weight:600; color:var(--navy);}
+  .stamp-item .si-pct{font-family:'Fredoka', sans-serif; font-size:11px; color:var(--stamp); margin-left:4px;}
   .stamp-memo{
     margin-top:10px;
     font-size:12px;
     color:#666;
-    border-top:1px solid var(--line);
+    border-top:1px dashed var(--line);
     padding-top:8px;
     line-height:1.6;
   }
@@ -436,19 +484,65 @@
     background:none;
     border:none;
     cursor:pointer;
-    font-family:'Noto Sans JP', sans-serif;
+    font-family:'M PLUS Rounded 1c', sans-serif;
   }
 
   /* ---------- Analysis ---------- */
   .avg-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px;}
-  .avg-cell{background:#fff; border:1px solid var(--line); border-radius:10px; padding:12px 8px; text-align:center;}
+
+  .diag-overall-card{
+    background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+    color:#fff;
+    border-radius:18px;
+    padding:16px 18px;
+    margin-bottom:12px;
+  }
+  .diag-overall-title{
+    font-family:'Zen Maru Gothic', sans-serif;
+    font-weight:900;
+    font-size:16px;
+    margin-bottom:6px;
+  }
+  .diag-overall-body{font-size:12.5px; line-height:1.8; color:rgba(255,255,255,0.9);}
+  .diag-cat-card{
+    background:#fff;
+    border:2px solid var(--paper-dim);
+    border-radius:16px;
+    padding:13px 15px;
+    margin-bottom:10px;
+  }
+  .diag-cat-label{
+    font-size:11.5px;
+    color:#888;
+    margin-bottom:3px;
+  }
+  .diag-cat-pct{font-family:'Fredoka', sans-serif; color:var(--stamp); font-weight:600;}
+  .diag-cat-title{
+    font-family:'Zen Maru Gothic', sans-serif;
+    font-weight:700;
+    font-size:14px;
+    color:var(--navy);
+    margin-bottom:4px;
+  }
+  .diag-cat-body{font-size:12px; line-height:1.7; color:#555;}
+  .diag-milestone{
+    background:var(--paper-dim);
+    border:2px dashed var(--gold);
+    border-radius:16px;
+    padding:13px 15px;
+    font-size:12.5px;
+    line-height:1.8;
+    color:var(--ink);
+    margin-top:4px;
+  }
+  .avg-cell{background:#fff; border:1px solid var(--line); border-radius:18px; padding:12px 8px; text-align:center;}
   .avg-cell .ac-label{font-size:11px; color:#888;}
-  .avg-cell .ac-val{font-family:'JetBrains Mono', monospace; font-weight:700; font-size:19px; color:var(--navy); margin-top:4px;}
+  .avg-cell .ac-val{font-family:'Fredoka', sans-serif; font-weight:700; font-size:19px; color:var(--navy); margin-top:4px;}
   .trend-wrap{overflow-x:auto; padding-bottom:4px;}
   .trend-chart{display:flex; align-items:flex-end; gap:14px; height:150px; min-width:100%; padding:0 4px;}
   .trend-col{display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:4px; flex-shrink:0; width:34px;}
   .trend-bar{width:16px; border-radius:3px 3px 0 0;}
-  .trend-label{font-size:9px; color:#999; font-family:'JetBrains Mono', monospace; transform:rotate(0deg); white-space:nowrap;}
+  .trend-label{font-size:9px; color:#999; font-family:'Fredoka', sans-serif; transform:rotate(0deg); white-space:nowrap;}
   .legend{display:flex; gap:14px; margin-top:12px; flex-wrap:wrap;}
   .legend-item{display:flex; align-items:center; gap:5px; font-size:11px; color:#666;}
   .legend-dot{width:9px; height:9px; border-radius:2px;}
@@ -471,7 +565,7 @@
   .coach-input-row{display:flex; gap:8px; position:sticky; bottom:0;}
   .coach-input-row input{flex:1;}
   .coach-send{
-    background:var(--stamp); color:#fff; border:none; border-radius:8px;
+    background:var(--stamp); color:#fff; border:none; border-radius:14px;
     padding:0 18px; font-weight:700; cursor:pointer; font-size:14px;
   }
   .typing{font-size:12px; color:#999; font-style:italic;}
@@ -479,14 +573,14 @@
   /* ---------- Settings ---------- */
   .set-row{
     display:flex; justify-content:space-between; align-items:center;
-    background:#fff; border:1px solid var(--line); border-radius:10px;
+    background:#fff; border:1px solid var(--line); border-radius:18px;
     padding:14px 16px; margin-bottom:10px;
   }
   .set-row .st-title{font-size:14px; font-weight:600; color:var(--navy);}
   .set-row .st-sub{font-size:11px; color:#999; margin-top:2px;}
   .set-btn{
     border:1px solid var(--navy); background:#fff; color:var(--navy);
-    border-radius:7px; padding:8px 14px; font-size:12px; cursor:pointer; font-weight:600;
+    border-radius:13px; padding:8px 14px; font-size:12px; cursor:pointer; font-weight:600;
   }
   .set-btn.danger{border-color:var(--stamp); color:var(--stamp);}
   .roadmap{font-size:12px; color:#888; line-height:2; padding:6px 4px;}
@@ -497,23 +591,28 @@
     position:fixed;
     bottom:0; left:50%; transform:translateX(-50%);
     width:100%; max-width:480px;
-    background:var(--navy);
+    background:var(--navy-deep);
     display:flex;
     padding:8px 4px calc(8px + env(safe-area-inset-bottom));
     z-index:10;
+    border-radius:22px 22px 0 0;
   }
   .nav-btn{
     flex:1;
     background:none; border:none;
     display:flex; flex-direction:column; align-items:center; gap:3px;
-    color:rgba(247,243,232,0.45);
+    color:rgba(255,255,255,0.5);
     font-size:9.5px;
-    font-family:'Noto Sans JP', sans-serif;
+    font-family:'M PLUS Rounded 1c', sans-serif;
+    font-weight:500;
     cursor:pointer;
-    padding:6px 2px;
+    padding:7px 2px;
     letter-spacing:0.3px;
+    border-radius:14px;
+    margin:0 2px;
+    transition:background .15s;
   }
-  .nav-btn.active{color:var(--paper);}
+  .nav-btn.active{color:#fff; background:rgba(255,255,255,0.16);}
   .nav-btn svg{width:20px; height:20px;}
   .toast{
     position:fixed; bottom:82px; left:50%; transform:translateX(-50%);
@@ -529,32 +628,36 @@
 <div id="app">
 
   <div class="topbar">
-    <div class="eyebrow">STUDY PASSPORT · IT PASSPORT EXAM</div>
-    <h1>IT Passport AI Coach</h1>
-    <div class="sub" id="topbarSub">v0.3 · 学習履歴管理</div>
+    <div class="eyebrow">がんばり きろく ノート</div>
+    <h1>ITパスポート がんばりノート</h1>
+    <div class="sub" id="topbarSub">v0.3 ・ まいにち コツコツ！</div>
   </div>
 
   <!-- HOME -->
   <div class="screen active" id="screen-home">
+    <div class="mascot-row">
+      <div class="mascot-face">🤖</div>
+      <div class="mascot-bubble" id="mascotBubble">はじめまして！いっしょにがんばろうね！</div>
+    </div>
     <h2 class="section-title">最新の記録</h2>
     <div class="card" id="homeLatestCard"></div>
 
     <h2 class="section-title">分野別平均</h2>
     <div class="card" id="homeMiniBars"></div>
 
-    <h2 class="section-title">クイックアクション</h2>
+    <h2 class="section-title">きょうも がんばろう！</h2>
     <div class="quick-grid">
       <button class="quick-btn" onclick="goto('record')">
-        <span class="qb-title">記録する</span>
+        <span class="qb-title">✏️ きろくする！</span>
         <span class="qb-sub">今日の結果を入力</span>
       </button>
       <button class="quick-btn alt" onclick="goto('history')">
-        <span class="qb-title">履歴を見る</span>
+        <span class="qb-title">📖 きろくをみる</span>
         <span class="qb-sub" id="homeCountSub">0件</span>
       </button>
       <button class="quick-btn alt" onclick="goto('analysis')" style="grid-column: span 2;">
-        <span class="qb-title">分析画面</span>
-        <span class="qb-sub">推移をチェック</span>
+        <span class="qb-title">📈 グラフでみる</span>
+        <span class="qb-sub">がんばりの推移をチェック</span>
       </button>
     </div>
   </div>
@@ -632,7 +735,7 @@
       <label class="f-label">メモ</label>
       <textarea id="in-memo" placeholder="気づいたこと、間違えた分野など"></textarea>
 
-      <button class="save-btn" onclick="saveRecord()">この記録を保存する</button>
+      <button class="save-btn" onclick="saveRecord()">🎉 きろくを ほぞんする！</button>
       <div class="form-msg" id="formMsg"></div>
     </div>
   </div>
@@ -653,6 +756,9 @@
       <div class="trend-wrap"><div class="trend-chart" id="trendChart"></div></div>
       <div class="legend" id="trendLegend"></div>
     </div>
+
+    <h2 class="section-title">🔎 あなたの強み診断</h2>
+    <div id="diagnosisBox"></div>
   </div>
 
   <!-- SETTINGS -->
@@ -705,10 +811,10 @@ const STORAGE_KEY = 'itpassport-records';
 let records = [];
 
 const CATS = [
-  {key:'overall', label:'総合', color:'#1b2a4a'},
-  {key:'strategy', label:'ストラテジ', color:'#c1443c'},
-  {key:'management', label:'マネジメント', color:'#b8935a'},
-  {key:'technology', label:'テクノロジ', color:'#3e6b63'},
+  {key:'overall', label:'総合', color:'#2F8FE0'},
+  {key:'strategy', label:'ストラテジ', color:'#FF7A59'},
+  {key:'management', label:'マネジメント', color:'#FFC93C'},
+  {key:'technology', label:'テクノロジ', color:'#3FC79A'},
 ];
 
 // Kept for future re-enable; IPA does not publish the scoring formula,
@@ -785,7 +891,28 @@ function showToast(msg){
 }
 
 /* ---------------- Home ---------------- */
+function updateMascot(){
+  const bubble = document.getElementById('mascotBubble');
+  if(!bubble) return;
+  if(records.length === 0){
+    bubble.textContent = 'はじめまして！いっしょにがんばろうね！';
+    return;
+  }
+  const r = records[0];
+  const p = pct(r.overallCorrect, r.overallTotal);
+  if(p === null){
+    bubble.textContent = 'きろく、ありがとう！つぎもいっしょにがんばろう！';
+  }else if(p >= 80){
+    bubble.textContent = `すごい！${p}%とれたね！その ちょうし！⭐`;
+  }else if(p >= 60){
+    bubble.textContent = `いいちょうし！${p}%とれたよ。このまま つづけよう！`;
+  }else{
+    bubble.textContent = `だいじょうぶ！${p}%からのスタート。すこしずつ のびてるよ！`;
+  }
+}
+
 function renderHome(){
+  updateMascot();
   const latestCard = document.getElementById('homeLatestCard');
   const countSub = document.getElementById('homeCountSub');
   countSub.textContent = records.length + '件';
@@ -1147,6 +1274,14 @@ async function saveRecord(){
 }
 
 /* ---------------- History ---------------- */
+// Picks a cute sticker color + emoji based on score tier.
+function stickerStyle(p){
+  if(p === null) return {bg:'#B9C4D4', emoji:'📝'};
+  if(p >= 80) return {bg:'#FFC93C', emoji:'⭐'};
+  if(p >= 60) return {bg:'#3FC79A', emoji:'😊'};
+  return {bg:'#FF7A59', emoji:'💪'};
+}
+
 function renderHistory(){
   const list = document.getElementById('historyList');
   if(records.length === 0){
@@ -1155,6 +1290,7 @@ function renderHistory(){
   }
   list.innerHTML = records.map(r=>{
     const op = pct(r.overallCorrect, r.overallTotal);
+    const sticker = stickerStyle(op);
     const items = CATS.filter(c=>c.key!=='overall').map(c=>{
       const cor = r[c.key+'Correct'], tot = r[c.key+'Total'];
       const p = pct(cor, tot);
@@ -1168,7 +1304,7 @@ function renderHistory(){
     }).join('');
     return `
       <div class="stamp-card">
-        <div class="stamp-badge"><span class="sp">${op===null?'—':op+'%'}</span><span class="sl">SCORE</span></div>
+        <div class="stamp-badge" style="background:${sticker.bg};"><span class="sp">${op===null?'—':op+'%'}</span><span class="sl">${sticker.emoji}</span></div>
         <div class="stamp-date">${r.date}${r.year ? ' ・ '+formatYearLabel(r.year) : ''}</div>
         ${r.practice ? `<div class="stamp-meta">${escapeHtml(r.practice)}</div>` : ''}
         <div class="stamp-grid">
@@ -1205,6 +1341,8 @@ function renderAnalysis(){
     `;
   }).join('');
 
+  renderDiagnosis();
+
   const chart = document.getElementById('trendChart');
   if(records.length === 0){
     chart.innerHTML = `<div class="empty-note">記録が増えると推移グラフが表示されます。</div>`;
@@ -1230,6 +1368,117 @@ function renderAnalysis(){
   document.getElementById('trendLegend').innerHTML = CATS.map(c=>`
     <div class="legend-item"><span class="legend-dot" style="background:${c.color}"></span>${c.label}</div>
   `).join('');
+}
+
+/* ---------------- Strength diagnosis ----------------
+   Turns raw percentages into plain-language descriptions of what the
+   person can likely already do, and what reaching the next milestone
+   (40% / 60% / 80%) would mean. This is rule-based (no AI call), so it
+   works offline and doesn't depend on any external API.
+*/
+const DIAGNOSIS = {
+  overall: {
+    label: '総合',
+    tiers: [
+      {min:0,  title:'土台づくり中', body:'ITの基本用語や考え方を、今まさに積み上げている段階です。ここからの伸びしろがいちばん大きい時期です。'},
+      {min:40, title:'合格ラインまであと一歩', body:'ITパスポートの合格ライン（60%）まであと少し。IT業界の基本的な話題にはついていけるようになってきています。'},
+      {min:60, title:'合格圏内', body:'経営・法務・技術の基礎を一通り押さえられています。IT部門と現場をつなぐ「共通言語」を持っている状態です。'},
+      {min:80, title:'高得点ゾーン', body:'ITパスポートの範囲をしっかり理解できています。社内でDX推進や新しいITツール導入の相談役になれるレベルです。'},
+    ]
+  },
+  strategy: {
+    label: 'ストラテジ系（経営・法務）',
+    tiers: [
+      {min:0,  title:'これから', body:'企業活動や法務、経営戦略の基礎知識を積み上げているところです。'},
+      {min:40, title:'基礎が育ち中', body:'契約や知的財産、経営戦略の考え方が少しずつ身についてきています。'},
+      {min:60, title:'実務の土台あり', body:'契約書の要点を読み取ったり、会社の戦略とITの関係を説明できるレベルです。'},
+      {min:80, title:'活かせるレベル', body:'新規事業の企画や、ITを絡めた経営提案、契約内容のチェックなどにも自信を持って関われます。'},
+    ]
+  },
+  management: {
+    label: 'マネジメント系（開発・PM）',
+    tiers: [
+      {min:0,  title:'これから', body:'システム開発の流れやプロジェクト管理の基礎を学び始めた段階です。'},
+      {min:40, title:'基礎が育ち中', body:'開発の進め方やサービス運用の考え方が少しずつ分かってきています。'},
+      {min:60, title:'実務の土台あり', body:'社内システム導入プロジェクトの進捗や課題を、担当者と一緒に整理できるレベルです。'},
+      {min:80, title:'活かせるレベル', body:'ITベンダーとの折衝や、社内プロジェクトの推進役としても頼られる知識があります。'},
+    ]
+  },
+  technology: {
+    label: 'テクノロジ系（技術）',
+    tiers: [
+      {min:0,  title:'これから', body:'コンピュータの仕組みやネットワーク、セキュリティの基礎を学び始めた段階です。'},
+      {min:40, title:'基礎が育ち中', body:'基本的な仕組みやセキュリティ用語が少しずつ理解できてきています。'},
+      {min:60, title:'実務の土台あり', body:'社内のちょっとしたITトラブルの一次対応や、セキュリティ意識の啓発ができるレベルです。'},
+      {min:80, title:'活かせるレベル', body:'技術的な話題でもIT部門と対等に会話でき、新しいツールの仕組みを理解して使いこなせます。'},
+    ]
+  },
+};
+
+function getTierContent(catKey, avg){
+  const tiers = DIAGNOSIS[catKey].tiers;
+  let chosen = tiers[0];
+  for(const t of tiers){ if(avg >= t.min) chosen = t; }
+  return chosen;
+}
+
+// Next milestone threshold (40 / 60 / 80) above the given average, or null if maxed out.
+function nextMilestone(avg){
+  for(const th of [40, 60, 80]){ if(avg < th) return th; }
+  return null;
+}
+
+function renderDiagnosis(){
+  const box = document.getElementById('diagnosisBox');
+  const overallAvg = averagePct('overall');
+  if(overallAvg === null){
+    box.innerHTML = `<div class="empty-note">記録が増えると、ここにあなたの強み診断が表示されます。</div>`;
+    return;
+  }
+
+  const overallContent = getTierContent('overall', overallAvg);
+  const subjectKeys = ['strategy','management','technology'];
+  const catCards = subjectKeys.map(key=>{
+    const avg = averagePct(key);
+    if(avg === null) return '';
+    const content = getTierContent(key, avg);
+    return `
+      <div class="diag-cat-card">
+        <div class="diag-cat-label">${DIAGNOSIS[key].label}　<span class="diag-cat-pct">${avg}%</span></div>
+        <div class="diag-cat-title">${content.title}</div>
+        <div class="diag-cat-body">${content.body}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Highlight the subject with the most room to grow, and describe what
+  // reaching the next milestone (40/60/80%) would unlock.
+  const subjectAvgs = subjectKeys.map(key => ({key, avg: averagePct(key)})).filter(x => x.avg !== null);
+  let milestoneHtml = '';
+  if(subjectAvgs.length){
+    subjectAvgs.sort((a,b) => a.avg - b.avg);
+    const weakest = subjectAvgs[0];
+    const nextTh = nextMilestone(weakest.avg);
+    if(nextTh !== null){
+      const diff = Math.max(1, Math.round(nextTh - weakest.avg));
+      const nextContent = getTierContent(weakest.key, nextTh);
+      milestoneHtml = `
+        <div class="diag-milestone">
+          🎯 <b>${DIAGNOSIS[weakest.key].label}</b>であと<b>${diff}ポイント</b>伸ばすと…<br>
+          「${nextContent.title}」：${nextContent.body}
+        </div>
+      `;
+    }
+  }
+
+  box.innerHTML = `
+    <div class="diag-overall-card">
+      <div class="diag-overall-title">${overallContent.title}</div>
+      <div class="diag-overall-body">${overallContent.body}</div>
+    </div>
+    ${catCards}
+    ${milestoneHtml}
+  `;
 }
 
 /* ---------------- Settings ---------------- */
